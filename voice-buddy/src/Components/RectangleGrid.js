@@ -28,6 +28,10 @@ const lyricsData = [
   { "word": " me?", "start": 29.4, "end": 29.88 },
 ];
 
+// Calculate the duration of the song and determine the number of rows
+const totalDuration = lyricsData[lyricsData.length - 1].end - lyricsData[0].start;
+const numRows = Math.ceil(totalDuration / 4); // Divide by 4 for 4 seconds per row
+
 // Utility function to group lyrics data into rows of approximately 4 seconds each
 function groupLyricsByDuration(data, maxDuration) {
   const rows = [];
@@ -57,7 +61,7 @@ function groupLyricsByDuration(data, maxDuration) {
   return rows;
 }
 
-export default function RectangleGrid({ numRows }) {
+export default function RectangleGrid() {
   const rectangles = Array.from({ length: numRows * 4 }); // Total number of rectangles
 
   // Group lyrics into rows of ~4 seconds each
@@ -74,7 +78,7 @@ export default function RectangleGrid({ numRows }) {
                 <div
                   className="border border-dark"
                   style={{
-                    paddingTop: '50%',  // Maintains 2:1 aspect ratio
+                    paddingTop: '10%',  // Maintains 2:1 aspect ratio
                     position: 'relative',
                   }}
                 >
@@ -83,15 +87,16 @@ export default function RectangleGrid({ numRows }) {
               </div>
             ))}
           </div>
-          {/* Center-aligned text under each row */}
+          {/* Left-aligned and full-width text under each row */}
           <div className="row mt-2">
-            <p className="d-flex flex-wrap text-center" style={{ justifyContent: 'center' }}>
+            <p className="d-flex flex-wrap text-left w-100" style={{ justifyContent: 'space-between' }}>
               {lyricsRows[rowIndex] && lyricsRows[rowIndex].map((lyric, index) => {
-                const duration = (lyric.end - lyric.start) * 50; // Adjust multiplier for spacing scale
+                const totalRowDuration = lyricsRows[rowIndex].reduce((sum, word) => sum + (word.end - word.start), 0);
+                const wordWidth = `${((lyric.end - lyric.start) / totalRowDuration) * 50}%`; // Calculate width as a percentage of row width
                 return (
                   <span
                     key={index}
-                    style={{ marginRight: `${duration}px` }} // Dynamic spacing based on duration
+                    style={{ display: 'inline-block', width: wordWidth, textAlign: 'left' }}
                   >
                     {lyric.word}
                   </span>
