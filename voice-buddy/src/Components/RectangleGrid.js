@@ -28,20 +28,40 @@ const lyricsData = [
   { "word": " me?", "start": 29.4, "end": 29.88 },
 ];
 
-// Utility function to group lyrics data into chunks of a given size
-function groupLyricsIntoChunks(data, chunkSize) {
-  const chunks = [];
-  for (let i = 0; i < data.length; i += chunkSize) {
-    chunks.push(data.slice(i, i + chunkSize));
+// Utility function to group lyrics data into rows of approximately 4 seconds each
+function groupLyricsByDuration(data, maxDuration) {
+  const rows = [];
+  let currentRow = [];
+  let currentDuration = 0;
+
+  data.forEach((lyric) => {
+    const wordDuration = lyric.end - lyric.start;
+    
+    if (currentDuration + wordDuration > maxDuration && currentRow.length > 0) {
+      // Push the current row to rows and reset for the next row
+      rows.push(currentRow);
+      currentRow = [];
+      currentDuration = 0;
+    }
+
+    // Add the current word to the row and increase the current duration
+    currentRow.push(lyric);
+    currentDuration += wordDuration;
+  });
+
+  // Add any remaining words as the last row
+  if (currentRow.length > 0) {
+    rows.push(currentRow);
   }
-  return chunks;
+
+  return rows;
 }
 
 export default function RectangleGrid({ numRows }) {
   const rectangles = Array.from({ length: numRows * 4 }); // Total number of rectangles
 
-  // Group lyrics into rows of 4 words each
-  const lyricsRows = groupLyricsIntoChunks(lyricsData, 4);
+  // Group lyrics into rows of ~4 seconds each
+  const lyricsRows = groupLyricsByDuration(lyricsData, 4);
 
   return (
     <div className="container my-4">
@@ -67,7 +87,7 @@ export default function RectangleGrid({ numRows }) {
           <div className="row mt-2">
             <p className="d-flex flex-wrap text-center" style={{ justifyContent: 'center' }}>
               {lyricsRows[rowIndex] && lyricsRows[rowIndex].map((lyric, index) => {
-                const duration = (lyric.end - lyric.start) * 75; // Adjust multiplier for spacing scale
+                const duration = (lyric.end - lyric.start) * 50; // Adjust multiplier for spacing scale
                 return (
                   <span
                     key={index}

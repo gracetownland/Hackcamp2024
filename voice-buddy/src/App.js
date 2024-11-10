@@ -14,7 +14,7 @@ export default function App() {
       </div>
       <div className="row mt-4">
         <div className="col-12">
-          <RectangleGrid numRows={4} />
+          <RectangleGrid numRows={10} />
         </div>
       </div>
     </div>
