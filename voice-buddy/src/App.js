@@ -1,14 +1,14 @@
+// App.js
+import React from 'react';
 import './App.css';
+import Form from './Components/Form'
+import RectangleGrid from './Components/RectangleGrid';
 
-export default function Form() {
+export default function App() {
   return (
-    <div className="form-container">
-      <label>
-        Link of song
-        <input name="firstName" />
-      </label>
-      <hr />
-      <button type="submit">Go!</button>
+    <div className="app-container">
+      <Form />
+      <RectangleGrid />
     </div>
   );
 }

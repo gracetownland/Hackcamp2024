@@ -1,0 +1,11 @@
+.rectangle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Four rectangles per row */
+  gap: 10px; /* Space between rectangles */
+}
+
+.rectangle-grid div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
