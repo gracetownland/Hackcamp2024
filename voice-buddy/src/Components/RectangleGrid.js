@@ -1,19 +1,15 @@
 // RectangleGrid.js
 import React from 'react';
-import Rectangle from './Rectangle';
 import './RectangleGrid.css';
 
-export default function RectangleGrid() {
+export default function RectangleGrid({ numRows }) {
+  const rectangles = Array.from({ length: numRows * 4 }); // Array with total number of rectangles (numRows * 4)
+
   return (
     <div className="rectangle-grid">
-      <div><Rectangle /></div>
-      <div><Rectangle /></div>
-      <div><Rectangle /></div>
-      <div><Rectangle /></div>
-      <div><Rectangle /></div>
-      <div><Rectangle /></div>
-      <div><Rectangle /></div>
-      <div><Rectangle /></div>
+      {rectangles.map((_, index) => (
+        <div key={index} className="rectangle"></div>
+      ))}
     </div>
   );
 }
