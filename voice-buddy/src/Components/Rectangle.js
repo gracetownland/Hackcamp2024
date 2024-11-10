@@ -4,7 +4,7 @@ import React from 'react';
 export default function Rectangle() {
   return (
     <div
-      className="border border-dark rounded bg-light"
+      className="border border-dark"
       style={{
         width: '100%',
         paddingTop: '50%',   // Maintains a 2:1 aspect ratio

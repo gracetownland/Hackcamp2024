@@ -7,12 +7,18 @@ export default function RectangleGrid({ numRows }) {
   return (
     <div className="container my-4">
       {Array.from({ length: numRows }).map((_, rowIndex) => (
-        <div key={rowIndex} className="mb-3">
-          <div className="row text-center">
+        <div key={rowIndex} className="mb-2">
+          <div className="row g-0">
             {/* Render four rectangles per row */}
             {rectangles.slice(rowIndex * 4, rowIndex * 4 + 4).map((_, index) => (
               <div key={index} className="col-3">
-                <div className="border border-dark rounded bg-light" style={{ paddingTop: '50%', position: 'relative' }}>
+                <div
+                  className="border border-dark"
+                  style={{
+                    paddingTop: '50%',  // Maintains 2:1 aspect ratio
+                    position: 'relative',
+                  }}
+                >
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}></div>
                 </div>
               </div>

@@ -41,7 +41,7 @@ export default function Form() {
 
         {/* Toggle Switch */}
         <div className="d-flex align-items-center justify-content-between mb-3">
-          <span className="me-2">Instruments Only</span>
+          <span className="me-2">Full Song</span>
           <div className="form-check form-switch">
             <input
               className="form-check-input"
@@ -51,7 +51,7 @@ export default function Form() {
               onChange={handleToggleChange}
             />
           </div>
-          <span className="ms-2">Full Song</span>
+          <span className="ms-2">Instrumental Only</span>
         </div>
 
         <button type="submit" className="btn btn-primary w-100">
