@@ -8,7 +8,7 @@ export default function App() {
   return (
     <div className="app-container">
       <Form />
-      <RectangleGrid numRows={3} />
+      <RectangleGrid numRows={4} />
     </div>
   );
 }
