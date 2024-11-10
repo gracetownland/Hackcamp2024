@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const lyricsData = [
   { "word": " I", "start": 10.22, "end": 10.98 },
@@ -67,8 +67,82 @@ export default function RectangleGrid() {
   // Group lyrics into rows of ~4 seconds each
   const lyricsRows = groupLyricsByDuration(lyricsData, 4);
 
+  // Cursor tracking state and animation control
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
+  const [isAnimationActive, setIsAnimationActive] = useState(false);
+
+  useEffect(() => {
+    if (!isAnimationActive) return;
+
+    let letterTimer, wordTimer;
+
+    const currentWord = lyricsData[currentWordIndex].word;
+    const wordDuration = lyricsData[currentWordIndex].end - lyricsData[currentWordIndex].start;
+    const letterDuration = wordDuration / currentWord.length; // Duration per letter
+
+    // Update letter index for highlighting each letter in the word
+    const startLetterHighlight = () => {
+      setCurrentLetterIndex(0);
+      letterTimer = setInterval(() => {
+        setCurrentLetterIndex((prevIndex) => {
+          if (prevIndex < currentWord.length - 1) {
+            return prevIndex + 1;
+          } else {
+            clearInterval(letterTimer);
+            return prevIndex;
+          }
+        });
+      }, letterDuration * 1000); // Convert to milliseconds
+    };
+
+    startLetterHighlight();
+
+    // Move to the next word after the full word duration
+    wordTimer = setTimeout(() => {
+      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % lyricsData.length);
+      setCurrentLetterIndex(0);
+    }, wordDuration * 1000);
+
+    return () => {
+      clearInterval(letterTimer);
+      clearTimeout(wordTimer);
+    };
+  }, [currentWordIndex, isAnimationActive]);
+
+  // Handler to reset the animation
+  const handleRestart = () => {
+    setIsAnimationActive(false);
+    setCurrentWordIndex(0);
+    setCurrentLetterIndex(0);
+  };
+
   return (
     <div className="container my-4">
+      {/* Buttons to control the animation */}
+      <div className="mb-4 d-flex gap-3">
+        <button
+          className="btn btn-primary"
+          onClick={() => setIsAnimationActive(true)}
+          disabled={isAnimationActive}
+        >
+          Start Animation
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => setIsAnimationActive(false)}
+          disabled={!isAnimationActive}
+        >
+          Stop Animation
+        </button>
+        <button
+          className="btn btn-success"
+          onClick={handleRestart}
+        >
+          Restart Animation
+        </button>
+      </div>
+      
       {Array.from({ length: numRows }).map((_, rowIndex) => (
         <div key={rowIndex} className="mb-4">
           <div className="row g-0">
@@ -93,12 +167,30 @@ export default function RectangleGrid() {
               {lyricsRows[rowIndex] && lyricsRows[rowIndex].map((lyric, index) => {
                 const totalRowDuration = lyricsRows[rowIndex].reduce((sum, word) => sum + (word.end - word.start), 0);
                 const wordWidth = `${((lyric.end - lyric.start) / totalRowDuration) * 50}%`; // Calculate width as a percentage of row width
+                
                 return (
                   <span
                     key={index}
-                    style={{ display: 'inline-block', width: wordWidth, textAlign: 'left' }}
+                    style={{
+                      display: 'inline-block',
+                      width: wordWidth,
+                      textAlign: 'left',
+                    }}
                   >
-                    {lyric.word}
+                    {Array.from(lyric.word).map((char, charIndex) => (
+                      <span
+                        key={charIndex}
+                        style={{
+                          backgroundColor:
+                            lyricsData.indexOf(lyric) < currentWordIndex || // Fully highlight previous words
+                            (lyricsData.indexOf(lyric) === currentWordIndex && charIndex <= currentLetterIndex)
+                              ? 'blue'
+                              : 'transparent',
+                        }}
+                      >
+                        {char}
+                      </span>
+                    ))}
                   </span>
                 );
               })}
