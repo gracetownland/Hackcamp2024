@@ -10,10 +10,28 @@ export default function Form() {
   };
 
   // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Song Link:", songLink);
-    console.log("Mode:", isInstrumentsOnly ? "Instruments Only" : "Full Song");
+    /* console.log("Song Link:", songLink);
+    console.log("Mode:", isInstrumentsOnly ? "Instruments Only" : "Full Song"); */
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/getJSON", {
+        method: "GET"
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      
+      const jsonData = await response.json();  // Parse the JSON response
+      console.log("JSON Data:", jsonData);
+
+    } catch (error){
+      console.error("Error fetching JSON data:", error)
+    }
+
+
   };
 
   // Toggle switch handler

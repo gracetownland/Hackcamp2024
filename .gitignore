@@ -12,7 +12,8 @@
 /build
 
 # misc
-venv
+venv/
+node_modules
 .DS_Store
 .env.local
 .env.development.local

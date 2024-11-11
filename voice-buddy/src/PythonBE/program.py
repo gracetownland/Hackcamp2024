@@ -54,7 +54,7 @@ def webm_to_mp3(s: str) -> str:
     os.remove(input_file)
     return output_file
 
-def jsonify(result):
+def jsonifys(result):
     '''
     Make a json object from transcribed object.
     :param result: transcribe the object from whisper
@@ -89,7 +89,7 @@ def run_program(youtube_url: str):
     model = model.to(device)
     result = model.transcribe(mp3_name, word_timestamps=True)
 
-    result_json = jsonify(result)  # make the result as a json object
+    result_json = jsonifys(result)  # make the result as a json object
     result_json = add_hyphen(result_json)
     return result_json
 
