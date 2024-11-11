@@ -16,6 +16,10 @@ def process():
     # from this yt_url download a mp3 file
     return program.run_program(yt_url)
 
+def return_json():
+    with open("result.json", "r") as f:
+        content = f.read()
+    return content
 
 if __name__ == '__main__':
     app.run()
