@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import mascot from "./../img/mascot.png"; // Import the PNG file
+import mascot from "./../img/mascot.png"; // Import the mascot PNG file
+import microphone from "./../img/microphone.png"; // Import the microphone PNG file
 
 export default function Form() {
   const [songLink, setSongLink] = useState(''); // State to hold input value
@@ -24,7 +25,15 @@ export default function Form() {
 
   return (
     <div className="container-fluid mt-4">
-      <h1 className="text-center mb-4">Voice Buddy :)</h1>
+      {/* Header with "Voice Buddy :)" and microphone icon */}
+      <div className="d-flex align-items-center justify-content-center mb-4">
+        <img
+          src={microphone}
+          alt="Microphone Icon"
+          style={{ width: '150px', height: '100px' }} // Adjust size as needed
+        />
+        <h1 className="mb-0 me-2">Voice Buddy :)</h1>
+      </div>
 
       {/* Flex container for full-width layout */}
       <div className="d-flex">
