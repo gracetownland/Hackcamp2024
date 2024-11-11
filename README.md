@@ -6,8 +6,9 @@ Task Sheet :https://excalidraw.com/#room=c5a61a86cf3e2f1bcc78,46hsgGWzyri3YCLdrp
 
 # Motivation
 
-You may want to sing like Mariah Carey, or speech like Martin Luther King Jr. 
-Trying to mimicing them without any aid would be boring or even frustraing.
+You may once think of singing like Mariah Carey, or give a speech like Martin Luther King Jr. 
+However trying to mimicking them without any clue or aid would be boring or even frustraing.
+This project gives you a real-time timeline of lyrics of a song and lines of speech -- which helps you following their way of singing and talking.
 This project will help you sing or talk like your favorite people!
 
 ## A Nice Song
