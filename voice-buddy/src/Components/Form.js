@@ -1,71 +1,37 @@
+// Form.js
 import React, { useState } from 'react';
-import mascot from "./../img/mascot.png"; // Import the mascot PNG file
-import microphone from "./../img/microphone.png"; // Import the microphone PNG file
+import mascot from "./../img/mascot.png";
+import microphone from "./../img/microphone.png";
 
-export default function Form() {
-  const [songLink, setSongLink] = useState(''); // State to hold input value
-  const [isInstrumentsOnly, setIsInstrumentsOnly] = useState(false); // State for toggle
+export default function Form({ onSubmit }) {
+  const [songLink, setSongLink] = useState('');
+  const [isInstrumentsOnly, setIsInstrumentsOnly] = useState(false);
 
-  // Update state on input change
   const handleInputChange = (event) => {
     setSongLink(event.target.value);
   };
 
-  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-    /* console.log("Song Link:", songLink);
-    console.log("Mode:", isInstrumentsOnly ? "Instruments Only" : "Full Song"); */
 
-    try {
-      const response = await fetch("http://127.0.0.1:5000/getJSON", {
-        method: "GET"
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      
-      const jsonData = await response.json();  // Parse the JSON response
-      console.log("JSON Data:", jsonData);
-
-    } catch (error){
-      console.error("Error fetching JSON data:", error)
-    }
-
-
+    // Mock API call or any other logic
+    onSubmit(); // Trigger loading and RectangleGrid display
   };
 
-  // Toggle switch handler
   const handleToggleChange = () => {
     setIsInstrumentsOnly(!isInstrumentsOnly);
   };
 
   return (
     <div className="container-fluid mt-4">
-      {/* Header with "Voice Buddy :)" and microphone icon */}
       <div className="d-flex align-items-center justify-content-center mb-4">
-        <img
-          src={microphone}
-          alt="Microphone Icon"
-          style={{ width: '150px', height: '100px' }} // Adjust size as needed
-        />
+        <img src={microphone} alt="Microphone Icon" style={{ width: '150px', height: '100px' }} />
         <h1 className="mb-0 me-2">Voice Buddy :)</h1>
       </div>
-
-      {/* Flex container for full-width layout */}
       <div className="d-flex">
-        
-        {/* Mascot Image on the left with fixed width */}
         <div className="d-flex align-items-center justify-content-center" style={{ width: '220px' }}>
-          <img
-            src={mascot}
-            alt="Mascot Icon"
-            style={{ width: '200px', height: '200px' }}
-          />
+          <img src={mascot} alt="Mascot Icon" style={{ width: '200px', height: '200px' }} />
         </div>
-
-        {/* Form on the right, taking up remaining space */}
         <div style={{ flex: 1, paddingLeft: '10px' }}>
           <form onSubmit={handleSubmit} className="p-3 border rounded">
             <div className="mb-3">
@@ -79,8 +45,6 @@ export default function Form() {
                 placeholder="Enter song link"
               />
             </div>
-
-            {/* Toggle Switch */}
             <div className="d-flex align-items-center justify-content-between mb-3">
               <span className="me-2">Full Song</span>
               <div className="form-check form-switch">
@@ -94,11 +58,7 @@ export default function Form() {
               </div>
               <span className="ms-2">Instrumental Only</span>
             </div>
-
-            {/* Submit button */}
-            <button type="submit" className="btn btn-primary w-100">
-              Go!
-            </button>
+            <button type="submit" className="btn btn-primary w-100">Go!</button>
           </form>
         </div>
       </div>
