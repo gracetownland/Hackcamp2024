@@ -1,6 +1,8 @@
 # Hackcamp2024
-Project for hackcamp 2024: **Voice Buddy**
+## Winner for Best Hack For Social Good
 
+
+### **Voice Buddy :)**
 
 Task Sheet: https://excalidraw.com/#room=c5a61a86cf3e2f1bcc78,46hsgGWzyri3YCLdrpyWdw
 
