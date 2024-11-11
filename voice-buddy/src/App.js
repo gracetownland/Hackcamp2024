@@ -9,7 +9,11 @@ export default function App() {
   const [showRectangleGrid, setShowRectangleGrid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFormSubmit = () => {
+  const [songFile, setSongFile] = useState('')
+  const handleFormSubmit = (songFile) => {
+    //save lyrics in App.js as a state variable
+    setSongFile(songFile)
+
     setIsLoading(true); // Start loading indicator
     setTimeout(() => {
       setIsLoading(false); // Stop loading indicator
@@ -47,7 +51,7 @@ export default function App() {
               <p>Loading...</p>
             </div>
           )}
-          {showRectangleGrid && !isLoading && <RectangleGrid />}
+          {showRectangleGrid && !isLoading && <RectangleGrid songFile={songFile} />}
         </div>
       </div>
     </div>

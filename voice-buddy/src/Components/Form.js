@@ -2,19 +2,23 @@
 import React, { useState } from 'react';
 import mascot from "./../img/mascot.png";
 import microphone from "./../img/microphone.png";
+import RectangleGrid from './RectangleGrid';
 
 export default function Form({ onSubmit }) {
   const [songLink, setSongLink] = useState('');
   const [isInstrumentsOnly, setIsInstrumentsOnly] = useState(false);
+  const [selectedSongFile, setSelectedSongFile] = useState('');
 
   const handleInputChange = (event) => {
     setSongLink(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-
-    // Mock API call or any other logic
+    const songFile = isInstrumentsOnly
+      ? "./../PythonBE/instrumental.mp3"
+      : "./../PythonBE/Aloe Blacc - I Need A Dollar.mp3";
+    setSelectedSongFile(songFile);
     onSubmit(); // Trigger loading and RectangleGrid display
   };
 
@@ -62,6 +66,12 @@ export default function Form({ onSubmit }) {
           </form>
         </div>
       </div>
+
+      {selectedSongFile && (
+        <RectangleGrid
+          isInstrumentsOnly={isInstrumentsOnly}
+        />
+      )}
     </div>
   );
 }
