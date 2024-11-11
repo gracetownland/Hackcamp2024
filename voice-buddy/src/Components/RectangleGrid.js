@@ -2553,13 +2553,10 @@ const lyricsData = [
         "end": 227.82000000000002
     }
 ]
-const firstWordStartTime = lyricsData[0].start; // Get the start time of the first word
-
-// Calculate the duration of the song and determine the number of rows
+const firstWordStartTime = lyricsData[0].start;
 const totalDuration = lyricsData[lyricsData.length - 1].end - lyricsData[0].start;
-const numRows = Math.ceil(totalDuration / 4); // Divide by 4 for 4 seconds per row
+const numRows = Math.ceil(totalDuration / 4);
 
-// Utility function to group lyrics data into rows of approximately 4 seconds each
 function groupLyricsByDuration(data, maxDuration) {
   const rows = [];
   let currentRow = [];
@@ -2567,24 +2564,15 @@ function groupLyricsByDuration(data, maxDuration) {
 
   data.forEach((lyric) => {
     const wordDuration = lyric.end - lyric.start;
-    
     if (currentDuration + wordDuration > maxDuration && currentRow.length > 0) {
-      // Push the current row to rows and reset for the next row
       rows.push(currentRow);
       currentRow = [];
       currentDuration = 0;
     }
-
-    // Add the current word to the row and increase the current duration
     currentRow.push(lyric);
     currentDuration += wordDuration;
   });
-
-  // Add any remaining words as the last row
-  if (currentRow.length > 0) {
-    rows.push(currentRow);
-  }
-
+  if (currentRow.length > 0) rows.push(currentRow);
   return rows;
 }
 
@@ -2594,101 +2582,67 @@ export default function RectangleGrid() {
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
-  const [isAnimationActive, setIsAnimationActive] = useState(false);
-  const [isPaused, setIsPaused] = useState(false); // Track if playback was paused
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const audioRef = useRef(null); // Audio reference
+  const audioRef = useRef(null);
 
-  // Start animation and audio
   const handleStart = () => {
-    if (isPaused) {
-      // Resume from the current time if paused
-      setIsPaused(false);
-      setIsAnimationActive(true);
-      if (audioRef.current) {
-        audioRef.current.play();
-      }
-    } else {
-      // Fresh start with delay
-      setIsAnimationActive(false);
-      setTimeout(() => {
-        setIsAnimationActive(true);
-      }, firstWordStartTime * 1000);
-
-      if (audioRef.current) {
-        audioRef.current.play();
-      }
+    if (audioRef.current) {
+      audioRef.current.play();
+      setIsPlaying(true);
     }
   };
 
   const handleStop = () => {
-    setIsPaused(true); // Mark playback as paused
-    setIsAnimationActive(false);
     if (audioRef.current) {
       audioRef.current.pause();
+      setIsPlaying(false);
     }
   };
 
   const handleRestart = () => {
-    setIsAnimationActive(false);
-    setCurrentWordIndex(0);
-    setCurrentLetterIndex(0);
-    setIsPaused(false);
     if (audioRef.current) {
-      audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      setCurrentWordIndex(0);
+      setCurrentLetterIndex(0);
+      handleStart();
     }
   };
+
   useEffect(() => {
-    if (!isAnimationActive) return;
+    const updateLyrics = () => {
+      if (!isPlaying || !audioRef.current) return;
 
-    let letterTimer, wordTimer;
+      const currentTime = audioRef.current.currentTime;
+      const wordIndex = lyricsData.findIndex(
+        (lyric) => currentTime >= lyric.start && currentTime <= lyric.end
+      );
 
-    const currentWord = lyricsData[currentWordIndex].word;
-    const wordDuration = lyricsData[currentWordIndex].end - lyricsData[currentWordIndex].start;
-    const letterDuration = wordDuration / currentWord.length;
-
-    const startLetterHighlight = () => {
-      setCurrentLetterIndex(0);
-      letterTimer = setInterval(() => {
-        setCurrentLetterIndex((prevIndex) => {
-          if (prevIndex < currentWord.length - 1) {
-            return prevIndex + 1;
-          } else {
-            clearInterval(letterTimer);
-            return prevIndex;
-          }
-        });
-      }, letterDuration * 5);
+      if (wordIndex !== -1 && wordIndex !== currentWordIndex) {
+        setCurrentWordIndex(wordIndex);
+        setCurrentLetterIndex(0);
+      } else {
+        const currentWord = lyricsData[currentWordIndex]?.word || "";
+        const wordDuration = lyricsData[currentWordIndex]?.end - lyricsData[currentWordIndex]?.start || 1;
+        const letterDuration = wordDuration / currentWord.length;
+        const letterIndex = Math.floor((currentTime - lyricsData[currentWordIndex]?.start) / letterDuration);
+        setCurrentLetterIndex(Math.min(letterIndex, currentWord.length - 1));
+      }
+      requestAnimationFrame(updateLyrics);
     };
 
-    startLetterHighlight();
-
-    wordTimer = setTimeout(() => {
-      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % lyricsData.length);
-      setCurrentLetterIndex(0);
-    }, wordDuration * 1000);
-
-    return () => {
-      clearInterval(letterTimer);
-      clearTimeout(wordTimer);
-    };
-  }, [currentWordIndex, isAnimationActive]);
+    if (isPlaying) {
+      requestAnimationFrame(updateLyrics);
+    }
+  }, [isPlaying, currentWordIndex]);
 
   return (
     <div className="container my-4">
       <audio ref={audioRef} src={songFile} preload="auto" />
-
       <div className="mb-4 d-flex gap-3">
-        <button className="btn btn-primary" onClick={handleStart} disabled={isAnimationActive}>
-          Start Animation
-        </button>
-        <button className="btn btn-secondary" onClick={handleStop} disabled={!isAnimationActive}>
-          Stop Animation
-        </button>
-        <button className="btn btn-success" onClick={handleRestart}>
-          Restart Animation
-        </button>
+        <button className="btn btn-primary" onClick={handleStart} disabled={isPlaying}>Start Animation</button>
+        <button className="btn btn-secondary" onClick={handleStop} disabled={!isPlaying}>Stop Animation</button>
+        <button className="btn btn-success" onClick={handleRestart}>Restart Animation</button>
       </div>
 
       {Array.from({ length: numRows }).map((_, rowIndex) => (
@@ -2696,15 +2650,7 @@ export default function RectangleGrid() {
           <div className="row g-0">
             {rectangles.slice(rowIndex * 4, rowIndex * 4 + 4).map((_, index) => (
               <div key={index} className="col-3">
-                <div
-                  className="border border-dark"
-                  style={{
-                    paddingTop: '10%',
-                    position: 'relative',
-                  }}
-                >
-                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}></div>
-                </div>
+                <div className="border border-dark" style={{ paddingTop: '10%', position: 'relative' }}></div>
               </div>
             ))}
           </div>
@@ -2715,14 +2661,7 @@ export default function RectangleGrid() {
                 const wordWidth = `${((lyric.end - lyric.start) / totalRowDuration) * 50}%`;
 
                 return (
-                  <span
-                    key={index}
-                    style={{
-                      display: 'inline-block',
-                      width: wordWidth,
-                      textAlign: 'left',
-                    }}
-                  >
+                  <span key={index} style={{ display: 'inline-block', width: wordWidth, textAlign: 'left' }}>
                     {Array.from(lyric.word).map((char, charIndex) => (
                       <span
                         key={charIndex}
