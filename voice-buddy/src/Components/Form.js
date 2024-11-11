@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import mascot from "./../img/mascot.png"; // Import the PNG file
 
 export default function Form() {
   const [songLink, setSongLink] = useState(''); // State to hold input value
@@ -23,20 +24,29 @@ export default function Form() {
 
   return (
     <div className="container mt-4">
-      <h1 className="text-center">VoiceBuddy :)</h1>
+      {/* Flex container for image and title */}
+      <div className="d-flex align-items-center justify-content-center mb-4">
+        <img
+          src={mascot}
+          alt="Mascot Icon"
+          style={{ width: '40px', height: '40px', marginRight: '10px' }}
+        />
+        <h1 className="text-center mb-0">VoiceBuddy :)</h1>
+      </div>
+
       <form onSubmit={handleSubmit} className="p-3 border rounded">
         <div className="mb-3">
-          <label htmlFor="songLink" className="form-label">
-            Link of song
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="songLink"
-            value={songLink}
-            onChange={handleInputChange}
-            placeholder="Enter song link"
-          />
+          <label htmlFor="songLink" className="form-label">Link of song</label>
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              id="songLink"
+              value={songLink}
+              onChange={handleInputChange}
+              placeholder="Enter song link"
+            />
+          </div>
         </div>
 
         {/* Toggle Switch */}
