@@ -4,7 +4,7 @@
 
 ### **Voice Buddy :)**
 
-Task Sheet: https://excalidraw.com/#room=c5a61a86cf3e2f1bcc78,46hsgGWzyri3YCLdrpyWdw
+Task Sheet: ![Brainstorming](brainstorming.png)
 
 # Motivation
 
